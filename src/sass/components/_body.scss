@@ -1,0 +1,7 @@
+@use '../abstract' as *;
+
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    background: linear-gradient(#222222, #161616);
+}

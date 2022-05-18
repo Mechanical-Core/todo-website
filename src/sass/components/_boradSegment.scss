@@ -1,0 +1,90 @@
+@use '../abstract' as *;
+
+.boardBacklog {
+    width: 150px;
+    min-width: 310px;
+    display: flexbox;
+    height: 720px;
+
+    @include borderStyling(#181818, #242424, 14px);
+
+    margin-inline: auto;
+}
+
+.contentFrame {
+    margin-top: 20px;
+    width: min(100% - 15rem, 1800px);
+    margin-inline: auto;
+    height: fit-content;
+}
+
+.boardHeader {
+    height: 105px;
+    border-bottom: 3px;
+    border-color: rgb(29, 29, 29);
+    border-bottom-style: solid;
+}
+
+.title {
+    color: #5A5A5A;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding-left: 11px;
+    font-weight: 350;
+    font-size: 32px;
+    margin-top: 8px;
+    margin-bottom: 6px;
+}
+
+.taskTitleFrame {
+    display:flex;
+    width: 100%;
+    padding-inline: 11px;
+    height: 38px;
+}
+
+.taskTitleInput {
+    flex-grow: 1;
+    font-family: system-ui;
+    font-size: 20px;
+    padding-left: 6px;
+    
+    @include borderStyling(#1E1E1E, #353535, 5px, "right", "true");
+    &:focus{ outline: none; };
+    
+    color: $color-gray600;
+}::placeholder{
+    color: #313131;
+}
+
+.createNewTask {
+    width: 40px;
+    font-family: system-ui;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    @include borderStyling(#1E1E1E, #353535, 5px, "left", "true");
+    
+    transition: 0.2s;
+}
+
+.createNewTask:hover{
+    background-color: #242424;
+    .plusIcon{
+        transform:rotate(90deg);
+        transition: 0.2s;
+    }
+}
+
+.createNewTask:active{
+    background-color: #313131;
+    width: 43px;
+}
+
+.plusIcon {
+    width: 25px;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(11%) saturate(0%) hue-rotate(233deg) brightness(77%) contrast(108%);
+    transition: 0.1s;
+}

@@ -2,6 +2,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body,
@@ -56,4 +57,14 @@ select {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+:focus{ outline: none; };
+
+::placeholder{
+  color: #313131;
+}
+::selection{
+  background: rgb(68, 68, 68);
+  color: #222222;
 }

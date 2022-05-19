@@ -2,9 +2,10 @@
 
 .boardBacklog {
     width: 150px;
-    min-width: 310px;
-    display: flexbox;
-    height: 720px;
+    min-width: 290px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 
     @include borderStyling(#181818, #242424, 14px);
 
@@ -12,27 +13,36 @@
 }
 
 .contentFrame {
-    margin-top: 20px;
-    width: min(100% - 15rem, 1800px);
+    position: fixed;
+    margin-top: 130px;
+    width: 100%;
+    padding-inline: 0px;
+    padding-block: auto;
     margin-inline: auto;
-    height: fit-content;
+    height: 75vh;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+.contentFrame > div {
+    margin-inline: 25px;
 }
 
 .boardHeader {
-    height: 105px;
-    border-bottom: 3px;
-    border-color: rgb(29, 29, 29);
+    height: 131px;
+    padding-bottom: 12px;
+    border-color: #242424;
     border-bottom-style: solid;
 }
 
 .title {
     color: #5A5A5A;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     padding-left: 11px;
     font-weight: 350;
     font-size: 32px;
     margin-top: 8px;
     margin-bottom: 6px;
+    user-select: none;
 }
 
 .taskTitleFrame {
@@ -43,6 +53,7 @@
 }
 
 .taskTitleInput {
+    width: 92%;
     flex-grow: 1;
     font-family: system-ui;
     font-size: 20px;
@@ -52,9 +63,8 @@
     &:focus{ outline: none; };
     
     color: $color-gray600;
-}::placeholder{
-    color: #313131;
 }
+
 
 .createNewTask {
     width: 40px;
@@ -84,7 +94,19 @@
 }
 
 .plusIcon {
-    width: 25px;
+    min-width: 25px;
     filter: brightness(0) saturate(100%) invert(29%) sepia(11%) saturate(0%) hue-rotate(233deg) brightness(77%) contrast(108%);
     transition: 0.1s;
+    user-select: none;
+}
+
+.cardContainer {
+    left: 0px;
+    width: auto;
+    display: flex;
+    height: 720px;
+    flex-direction: column;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    border-radius: 0px 12px 12px 12px;
 }

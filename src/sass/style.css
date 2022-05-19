@@ -113,7 +113,7 @@ body {
   pointer-events: none;
 }
 
-.boardBacklog {
+.board {
   width: 150px;
   min-width: 290px;
   display: flex;
@@ -316,6 +316,10 @@ body {
       -ms-user-select: none;
           user-select: none;
   overflow-y: scroll;
+}
+
+.template {
+  display: none;
 }
 
 .modalBackground {

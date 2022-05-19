@@ -1,12 +1,4 @@
-
 var modal = document.querySelector('.modalBackground')
-
-document.querySelectorAll('.card').forEach(item => {
-    item.addEventListener('click', event => {
-        item.scrollIntoView();
-        modal.style.display = "block";
-    })
-})
 
 document.querySelectorAll('.modalX').forEach(item => {
     item.addEventListener('click', event => {
@@ -55,5 +47,32 @@ document.querySelectorAll('.colorPicker').forEach(item => {
         if(item.classList.contains("OptionPurple")){ item.setAttribute("style", "background: #5125b8"); item.classList.remove("disabled")}
         if(item.classList.contains("OptionPink")){ item.setAttribute("style", "background: #c735c7"); item.classList.remove("disabled")}
         item.classList.add("enabled")
+    })
+})
+
+
+// -----------------------------------------------------------------------
+// ADDING CARDS
+// -----------------------------------------------------------------------
+
+function addCard(board, title) {
+    var cardContainer = board.getElementsByClassName("cardContainer")[0]
+    var node = document.getElementsByClassName("template")[0]
+    var cardTemplate = node.cloneNode(true)
+    cardTemplate.classList.remove("template")
+    cardTemplate.getElementsByClassName("cardTitleText")[0].innerHTML = title
+    cardTemplate.getElementsByClassName("cardDescription")[0].innerHTML = "Click me to edit the description!"
+
+    cardTemplate.addEventListener('click', () => { cardTemplate.scrollIntoView(); modal.style.display = "block"; })
+
+    cardContainer.appendChild(cardTemplate)
+}
+
+document.querySelectorAll(".board").forEach(item => {
+    item.getElementsByClassName("createNewTask")[0].addEventListener('click', () => {
+        var inputValue = item.getElementsByClassName("taskTitleInput")[0].value
+        if (inputValue != "") {
+            addCard(document.getElementById(item.id), inputValue)
+        }
     })
 })

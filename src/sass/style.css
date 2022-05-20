@@ -524,6 +524,7 @@ body {
 }
 
 .enabled {
+  background: #ad2828;
   color: #ffffff;
   font-weight: 500;
 }

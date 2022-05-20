@@ -168,6 +168,7 @@
 }
 
 .enabled {
+    background: #ad2828; // initial color, is overwritten later
     color: #ffffff;
     svg { filter: brightness(100) contrast(100); }
     font-weight: 500;

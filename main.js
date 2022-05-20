@@ -55,6 +55,13 @@ document.querySelectorAll('.colorPicker').forEach(item => {
 // ADDING CARDS
 // -----------------------------------------------------------------------
 
+function cardClicked(card){
+    card.scrollIntoView()
+    modal.style.display = "block"
+    modal.getElementsByClassName("modalEditCardTitle")[0].value = card.getElementsByClassName("cardTitleText")[0].innerHTML
+    modal.getElementsByClassName("modalEditCardDescription")[0].value = card.getElementsByClassName("cardDescription")[0].innerHTML
+}
+
 function addCard(board, title) {
     var cardContainer = board.getElementsByClassName("cardContainer")[0]
     var node = document.getElementsByClassName("template")[0]
@@ -63,9 +70,9 @@ function addCard(board, title) {
     cardTemplate.getElementsByClassName("cardTitleText")[0].innerHTML = title
     cardTemplate.getElementsByClassName("cardDescription")[0].innerHTML = "Click me to edit the description!"
 
-    cardTemplate.addEventListener('click', () => { cardTemplate.scrollIntoView(); modal.style.display = "block"; })
-
     cardContainer.appendChild(cardTemplate)
+
+    cardTemplate.addEventListener('click', () => {cardClicked(cardTemplate)})
 }
 
 document.querySelectorAll(".board").forEach(item => {

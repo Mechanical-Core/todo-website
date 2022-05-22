@@ -14,7 +14,7 @@
             <div class="boardHeader">
                 <div class="title">Backlog</div>
                 <div class="taskTitleFrame">
-                    <input class="taskTitleInput" spellcheck="false" type="text" placeholder="New card title..."></input>
+                    <input class="taskTitleInput" spellcheck="false" type="text" maxlength="35" placeholder="New card title..."></input>
                     <button class="createNewTask">
                         <img class="plusIcon" src="/src/static/svg/plus.svg" alt="+">
                     </button>
@@ -22,7 +22,8 @@
             </div>
             
             <div class="cardContainer">
-                <div class="card template">
+                <div draggable="true" class="card card-boxshadow-red template">
+                    <div class="cardCatcher" style="display: block; height: 4.9em; width: 16.6em; position: absolute;"></div>
                     <div class="cardTitle">
                         <div class="cardTitleText">Template</div>
                     </div>
@@ -42,7 +43,50 @@
             </div>
             
             <div class="cardContainer">
-                <div class="card template">
+                <div draggable="true"  class="card card-boxshadow-red template">
+                    <div class="cardCatcher" style="display: block; height: 4.9em; width: 16.6em; position: absolute;"></div>
+                    <div class="cardTitle">
+                        <div class="cardTitleText">Template</div>
+                    </div>
+                    <p class="cardDescription">TemplateDescription</p>
+                </div>
+            </div>
+        </div>
+        <div id="Progress" class="board">
+            <div class="boardHeader">
+                <div class="title">Progress</div>
+                <div class="taskTitleFrame">
+                    <input class="taskTitleInput" spellcheck="false" type="text" placeholder="New card title..."></input>
+                    <button class="createNewTask">
+                        <img class="plusIcon" src="/src/static/svg/plus.svg" alt="+">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cardContainer">
+                <div draggable="true"  class="card card-boxshadow-red template">
+                    <div class="cardCatcher" style="display: block; height: 4.9em; width: 16.6em; position: absolute;"></div>
+                    <div class="cardTitle">
+                        <div class="cardTitleText">Template</div>
+                    </div>
+                    <p class="cardDescription">TemplateDescription</p>
+                </div>
+            </div>
+        </div>
+        <div id="Done" class="board">
+            <div class="boardHeader">
+                <div class="title">Done</div>
+                <div class="taskTitleFrame">
+                    <input class="taskTitleInput" spellcheck="false" type="text" placeholder="New card title..."></input>
+                    <button class="createNewTask">
+                        <img class="plusIcon" src="/src/static/svg/plus.svg" alt="+">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cardContainer">
+                <div draggable="true"  class="card card-boxshadow-red template">
+                    <div class="cardCatcher" style="display: block; height: 4.9em; width: 16.6em; position: absolute;"></div>
                     <div class="cardTitle">
                         <div class="cardTitleText">Template</div>
                     </div>
@@ -60,9 +104,9 @@
             <p class="modalTitle">What do you want to do with this card?</p>
             <div class="modalEditFrame">
                 <p class="modalEditTitleTitle">Edit title</p>
-                <input type="text" class="modalEditCardTitle" placeholder="Card title..."></input>
+                <input type="text" class="modalEditCardTitle" maxlength="35" placeholder="Card title..."></input>
                 <p class="modalEditDescriptionTitle">Edit Description</p>
-                <textarea type="text" class="modalEditCardDescription" placeholder="Card Description..."></textarea>
+                <textarea type="text" class="modalEditCardDescription" maxlength="255" placeholder="Card Description..."></textarea>
                 
                 <div class="colorAccentPicker">
                     <div class="colorPicker OptionRed enabled">
@@ -104,7 +148,7 @@
                 </div>
                 
                 <button class="SubmitEdit">
-                    Submit
+                    Update
                 </button>
 
                 <div class="hint">

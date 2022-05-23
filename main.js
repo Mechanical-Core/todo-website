@@ -112,9 +112,6 @@ function cardClicked(cardID){
         }
     }
 
-    function setModalColorPickerFromCard(cardObject) {
-        
-    }
 
     switch(cardFromID.classList[1]) {
         case "card-boxshadow-red":
@@ -201,7 +198,6 @@ function cardClicked(cardID){
         actionButton.innerHTML = "Update"
     }
 
-    
     actionButton.addEventListener("click", actionButtonClickEvent)
 
     function modalFieldCheck() {
@@ -215,7 +211,7 @@ function cardClicked(cardID){
             actionButton.innerHTML = "Update"
         }
     }
-
+    
     [titleField, descField].forEach(item => {
         item.addEventListener("input", () => {
             modalFieldCheck()
@@ -229,20 +225,38 @@ function appendWithUniqueID(borad, card) {
     borad.querySelector(".cardContainer").appendChild(card)
 }
 
-function addCard(board, title) {
-    var cardContainer = board.getElementsByClassName("cardContainer")[0]
+function addCard(boardPassed, title, description="", colorClass="") {
+    var board
+
+    if(typeof boardPassed === "string"){
+        board = document.getElementById(boardPassed)
+    } else {
+        board = boardPassed
+    }
+
+    var cardContainer = board.querySelector(".cardContainer")
     var node = document.getElementsByClassName("template")[0]
     var cardTemplate = node.cloneNode(true)
+
     cardTemplate.classList.remove("template")
     cardTemplate.getElementsByClassName("cardTitleText")[0].innerHTML = title
-    cardTemplate.getElementsByClassName("cardDescription")[0].innerHTML = "Click me to edit the description!"
+
+    if(description != ""){
+        cardTemplate.getElementsByClassName("cardDescription")[0].innerHTML = description
+    } else {
+        cardTemplate.getElementsByClassName("cardDescription")[0].innerHTML = "Click me to edit the description!"
+    }
+
+    if(colorClass != ""){
+        resetEnabled(cardTemplate) 
+        cardTemplate.classList.add(colorClass)
+    }
 
     appendWithUniqueID(board, cardTemplate)
 
     var cardClickEvent = () => {
         cardClicked(cardTemplate.id)
     }
-
 
     cardTemplate.addEventListener('click', cardClickEvent);
 
@@ -259,6 +273,7 @@ document.querySelectorAll(".board").forEach(item => {
         var inputValue = item.getElementsByClassName("taskTitleInput")[0].value
         if (inputValue != "") {
             addCard(document.getElementById(item.id), inputValue)
+            item.getElementsByClassName("taskTitleInput")[0].value = ""
         }
     })
 
@@ -330,7 +345,6 @@ function handleDragOver(event) {
 function handleDragEnter(event) {
     if(event.target.classList.contains("cardContainer")){
         event.preventDefault()
-        console.log("ENTERED")
     } else {
         var cardFromEvent = cardObjectFromEvent(event)
         if(cardFromEvent != dragSrcEl) {
@@ -355,8 +369,6 @@ function handleDrop(event) {
     event.stopPropagation();
     var cardFromEvent = cardObjectFromEvent(event)
 
-    console.log(event.target)
-
     if (dragSrcEl !== cardFromEvent) {
         var toClasses = [... cardFromEvent.classList]
         var fromClasses = [... dragSrcEl.classList]
@@ -377,14 +389,48 @@ function handleDropCardContainer(event){
     event.preventDefault()
     event.stopPropagation();
     var boardName = event.target.parentNode.id
-    console.log(boardName)
-
     components = dragSrcEl.id.split("-")
-    console.log(components)
     components[1] = boardName
 
     dragSrcEl.id = `${components[0]}-${components[1]}-${components[2]}`
-    console.log(dragSrcEl.id)
 
     event.target.append(dragSrcEl)
 }
+
+
+function saveCurrentState(){
+    var objectArray = []
+
+    document.querySelectorAll(".card").forEach(cardElement => {
+        if(!cardElement.classList.contains("template")){
+            var cardObjectData = []
+            cardObjectData.push(cardElement.parentElement.parentElement.id) // board id
+            cardObjectData.push(cardElement.classList[1]) // color class
+            cardObjectData.push(cardElement.querySelector(".cardTitleText").innerText) // title
+            cardObjectData.push(cardElement.querySelector(".cardDescription").innerText) // description
+            objectArray.push(cardObjectData)
+        }
+    });
+
+    localStorage.setItem("cardData", JSON.stringify(objectArray))
+}
+
+function LoadCardData() {
+    var cardData = JSON.parse(localStorage.getItem("cardData"))
+    if(cardData != null){
+        console.log(cardData)
+        cardData.forEach((cardinfo) =>{
+            console.log(cardinfo[1])
+            addCard(cardinfo[0], cardinfo[2], cardinfo[3], cardinfo[1])
+        })
+    }
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    LoadCardData()
+});
+
+window.addEventListener('beforeunload', () => {
+    saveCurrentState()
+});

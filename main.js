@@ -110,8 +110,18 @@ function cardClicked(cardID){
                 resetOtherColorSelections("OptionPink")
                 break;
         }
-    }
 
+        $.ajax({
+            type: 'PUT',
+            url: `http://127.0.0.1:8000/api/tasks/${cardObject.id.split("-")[2]}`,
+            data: {
+                "board_id": cardObject.parentElement.parentElement.id,
+                "title": cardObject.querySelector(".cardTitleText").innerText,
+                "description": cardObject.querySelector(".cardDescription").innerText,
+                "color": cardObject.classList[1],
+            }
+        })
+    }
 
     switch(cardFromID.classList[1]) {
         case "card-boxshadow-red":
@@ -136,7 +146,6 @@ function cardClicked(cardID){
             setCurrentColorSelection("OptionPink", cardFromID, modal.querySelector('.OptionPink'))
             break;
     }
-
 
     modal.querySelectorAll('.colorPicker').forEach(color => {
         var old_element = color;
@@ -175,6 +184,17 @@ function cardClicked(cardID){
             old_element.parentNode.replaceChild(new_element, old_element);
 
             color = new_element
+
+            $.ajax({
+                type: 'PUT',
+                url: `http://127.0.0.1:8000/api/tasks/${cardFromID.id.split("-")[2]}`,
+                data: {
+                    "board_id": cardFromID.parentElement.parentElement.id,
+                    "title": cardFromID.querySelector(".cardTitleText").innerText,
+                    "description": cardFromID.querySelector(".cardDescription").innerText,
+                    "color": cardFromID.classList[1],
+                }
+            })
         })
     })
 
@@ -186,12 +206,29 @@ function cardClicked(cardID){
         actionButton = new_element
 
         if(actionButton.classList.contains("deleteCard")){
-            document.getElementById(cardID).remove()
+            cardFromID.remove()
             modal.style.display = "none";
+
+            $.ajax({
+                type: 'DELETE',
+                url: `http://127.0.0.1:8000/api/tasks/${cardFromID.id.split("-")[2]}`,
+            })
+
         } else {
-            document.getElementById(cardID).getElementsByClassName("cardTitleText")[0].innerHTML = titleField.value
-            document.getElementById(cardID).getElementsByClassName("cardDescription")[0].innerHTML= descField.value
+            cardFromID.getElementsByClassName("cardTitleText")[0].innerHTML = titleField.value
+            cardFromID.getElementsByClassName("cardDescription")[0].innerHTML= descField.value
             modal.style.display = "none";
+
+            $.ajax({
+                type: 'PUT',
+                url: `http://127.0.0.1:8000/api/tasks/${cardFromID.id.split("-")[2]}`,
+                data: {
+                    "board_id": cardFromID.parentElement.parentElement.id,
+                    "title": cardFromID.querySelector(".cardTitleText").innerText,
+                    "description": cardFromID.querySelector(".cardDescription").innerText,
+                    "color": cardFromID.classList[1],
+                }
+            })
         }
 
         actionButton.classList.remove("deleteCard")
@@ -219,13 +256,19 @@ function cardClicked(cardID){
     })
 }
 
-function appendWithUniqueID(borad, card) {
-    var elements = borad.querySelector(".cardContainer").getElementsByClassName("card");
-    card.id = "card-" + borad.id + "-" + elements.length;
-    borad.querySelector(".cardContainer").appendChild(card)
+function appendWithID(board, card, id=null) {
+    if(id != null){
+        var elements = board.querySelector(".cardContainer").getElementsByClassName("card");
+        card.id = "card-" + board.id + "-" + id;
+        board.querySelector(".cardContainer").appendChild(card)
+    } else {
+        var elements = board.querySelector(".cardContainer").getElementsByClassName("card");
+        card.id = "card-" + board.id + "-" + elements.length;
+        board.querySelector(".cardContainer").appendChild(card)
+    }
 }
 
-function addCard(boardPassed, title, description="", colorClass="") {
+function addCard(boardPassed, title, description="", colorClass="", id=null, isLoad=false) {
     var board
 
     if(typeof boardPassed === "string"){
@@ -252,12 +295,30 @@ function addCard(boardPassed, title, description="", colorClass="") {
         cardTemplate.classList.add(colorClass)
     }
 
-    appendWithUniqueID(board, cardTemplate)
-
+    if(!isLoad){
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:8000/api/tasks',
+            data: {
+                "board_id": board.id,
+                "title": cardTemplate.querySelector(".cardTitleText").innerText,
+                "description": cardTemplate.querySelector(".cardDescription").innerText,
+                "color": cardTemplate.classList[1],
+            },
+            success: (data) => {    
+                appendWithID(board, cardTemplate, id=`${data.data.id}`)
+            }
+        })
+    } else if(id){
+        appendWithID(board, cardTemplate, id)
+    } else {
+        appendWithID(board, cardTemplate)
+    }
+    
     var cardClickEvent = () => {
         cardClicked(cardTemplate.id)
     }
-
+    
     cardTemplate.addEventListener('click', cardClickEvent);
 
     cardTemplate.addEventListener('dragstart', handleDragStart);
@@ -381,6 +442,28 @@ function handleDrop(event) {
 
         cardFromEvent.classList.add(fromClasses[1])
         dragSrcEl.classList.add(toClasses[1])
+
+        $.ajax({
+            type: 'PUT',
+            url: `http://127.0.0.1:8000/api/tasks/${cardFromEvent.id.split("-")[2]}`,
+            data: {
+                "board_id": cardFromEvent.parentElement.parentElement.id,
+                "title": cardFromEvent.querySelector(".cardTitleText").innerText,
+                "description": cardFromEvent.querySelector(".cardDescription").innerText,
+                "color": cardFromEvent.classList[1],
+            }
+        })
+
+        $.ajax({
+            type: 'PUT',
+            url: `http://127.0.0.1:8000/api/tasks/${dragSrcEl.id.split("-")[2]}`,
+            data: {
+                "board_id": dragSrcEl.parentElement.parentElement.id,
+                "title": dragSrcEl.querySelector(".cardTitleText").innerText,
+                "description": dragSrcEl.querySelector(".cardDescription").innerText,
+                "color": dragSrcEl.classList[1],
+            }
+        })
     }
     cardFromEvent.removeAttribute("style")
 }
@@ -395,42 +478,32 @@ function handleDropCardContainer(event){
     dragSrcEl.id = `${components[0]}-${components[1]}-${components[2]}`
 
     event.target.append(dragSrcEl)
-}
 
-
-function saveCurrentState(){
-    var objectArray = []
-
-    document.querySelectorAll(".card").forEach(cardElement => {
-        if(!cardElement.classList.contains("template")){
-            var cardObjectData = []
-            cardObjectData.push(cardElement.parentElement.parentElement.id) // board id
-            cardObjectData.push(cardElement.classList[1]) // color class
-            cardObjectData.push(cardElement.querySelector(".cardTitleText").innerText) // title
-            cardObjectData.push(cardElement.querySelector(".cardDescription").innerText) // description
-            objectArray.push(cardObjectData)
+    $.ajax({
+        type: 'PUT',
+        url: `http://127.0.0.1:8000/api/tasks/${dragSrcEl.id.split("-")[2]}`, // card-ToDo-3 ["card",]
+        data: {
+            "board_id": dragSrcEl.parentElement.parentElement.id,
+            "title": dragSrcEl.querySelector(".cardTitleText").innerText,
+            "description": dragSrcEl.querySelector(".cardDescription").innerText,
+            "color": dragSrcEl.classList[1],
         }
-    });
-
-    localStorage.setItem("cardData", JSON.stringify(objectArray))
+    })
 }
 
 function LoadCardData() {
-    var cardData = JSON.parse(localStorage.getItem("cardData"))
-    if(cardData != null){
-        console.log(cardData)
-        cardData.forEach((cardinfo) =>{
-            console.log(cardinfo[1])
-            addCard(cardinfo[0], cardinfo[2], cardinfo[3], cardinfo[1])
-        })
-    }
+    $.ajax({
+        type: 'GET',
+        url: 'http://127.0.0.1:8000/api/tasks',
+        success: (data) => {
+            data.data.forEach((dataNode) => {
+                var board = document.querySelector("#" + dataNode.board_id)
+                addCard(board, dataNode.title, dataNode.description, dataNode.color, dataNode.id, true)
+            });
+        }
+    })
 }
-
 
 window.addEventListener('DOMContentLoaded', () => {
     LoadCardData()
-});
-
-window.addEventListener('beforeunload', () => {
-    saveCurrentState()
 });

@@ -138,7 +138,6 @@ body {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  overflow-y: scroll;
 }
 
 .contentFrame > div {
@@ -237,7 +236,7 @@ body {
   height: 720px;
   flex-direction: column;
   scroll-behavior: smooth;
-  overflow-y: none;
+  overflow-y: scroll;
   border-radius: 0px 12px 12px 12px;
 }
 
